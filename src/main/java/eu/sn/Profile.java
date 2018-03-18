@@ -1,17 +1,17 @@
 package eu.sn;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 class Profile {
     private String profileId;
     private String scenarioTime;
     private String version;
-    private Set<String> dependentOn;
+    private Collection<String> dependentOn;
     private CgmesProfileType profile;
 
     public Profile() {
-        dependentOn = new HashSet<String>();
+        dependentOn = new ArrayList<>();
     }
 
     public String getProfileId() {
@@ -38,7 +38,7 @@ class Profile {
         this.version = version;
     }
 
-    public Set<String> getDependentOn() {
+    public Collection<String> getDependentOn() {
         return dependentOn;
     }
 

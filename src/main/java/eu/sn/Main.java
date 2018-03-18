@@ -37,7 +37,15 @@ public class Main {
             System.exit(1);
         }
         else {
-            new ArgumentProcessor(cmd);
+            ArgumentProcessor argumentProcessor = new ArgumentProcessor(cmd);
+
+            FileProcessor fileProcessor = new FileProcessor();
+            fileProcessor.processFiles(argumentProcessor.getProfilesDirectory());
+
+            if (argumentProcessor.isVerify()) {
+                DependencyResolver.printProfileDependenciesStatus(fileProcessor.getCgmesProfiles());
+                System.exit(0);
+            }
         }
     }
 }

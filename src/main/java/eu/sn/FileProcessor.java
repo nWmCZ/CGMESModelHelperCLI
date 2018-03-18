@@ -3,14 +3,15 @@ package eu.sn;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FileProcessor {
 
-    private Map<CgmesProfileType, File> profilesMap = new HashMap();
     private Set<Profile> cgmesProfiles = new HashSet<>();
 
-    public void processFiles(File inputFilesDir, String dateTime, String version, boolean ids) throws FileNotFoundException, XMLStreamException {
+    public void processFiles(File inputFilesDir) throws FileNotFoundException, XMLStreamException {
 
         XMLProcesor xmlProcesor = new XMLProcesor();
 
@@ -28,15 +29,19 @@ public class FileProcessor {
                 System.out.println(Arrays.toString(files));
                 if (!file.getName().toLowerCase().endsWith(".xml")) {
                     System.out.println("Ignoring: " + file.getName());
+                    System.out.println("TODO move to 'orig' folder and unzip");
                     //System.exit(1);
                 } else {
-                    xmlProcesor.extractModelMetadata(file);
+                    cgmesProfiles.add(xmlProcesor.extractModelMetadata(file));
                 }
-
             }
         } else {
             System.out.println("No files");
             System.exit(0);
         }
+    }
+
+    public Set<Profile> getCgmesProfiles() {
+        return cgmesProfiles;
     }
 }

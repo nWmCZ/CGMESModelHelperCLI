@@ -2,22 +2,20 @@ package eu.sn;
 
 import org.apache.commons.cli.CommandLine;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
-import java.io.FileNotFoundException;
 
-import static eu.sn.DependencyResolver.printProfileDependenciesStatus;
 import static eu.sn.Main.*;
 import static java.lang.String.format;
 
 public class ArgumentProcessor {
 
     private File profilesDirectory = null;
+    private boolean verify = false;
     private String dateTime = null;
     private String version = null;
     private boolean ids = false;
 
-    public ArgumentProcessor(CommandLine commandLine) throws FileNotFoundException, XMLStreamException {
+    public ArgumentProcessor(CommandLine commandLine) {
         if (commandLine.hasOption(PROFILES_PATH)) {
             File file = new File(commandLine.getOptionValue(PROFILES_PATH));
             if (!file.isDirectory()) {
@@ -29,10 +27,8 @@ public class ArgumentProcessor {
             }
         }
         if (commandLine.hasOption(VERIFY)) {
-            String parsedVerifyCommand = commandLine.getOptionValue(VERIFY);
-            System.out.println("Profiles dependencies will be verified " + parsedVerifyCommand);
-            printProfileDependenciesStatus();
-            System.exit(0);
+            System.out.println("Profiles dependencies will be verified");
+            verify = true;
         }
         if (commandLine.hasOption(DATE_TIME)) {
             String parsedDateTime = commandLine.getOptionValue(DATE_TIME);
@@ -49,7 +45,29 @@ public class ArgumentProcessor {
             System.out.println("New Ids will be set");
             ids = true;
         }
+    }
 
-        new FileProcessor().processFiles(profilesDirectory, dateTime, version, ids);
+    public File getProfilesDirectory() {
+        return profilesDirectory;
+    }
+
+    public boolean isVerify() {
+        return verify;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public boolean isIds() {
+        return ids;
+    }
+
+    public void setIds(boolean ids) {
+        this.ids = ids;
     }
 }
