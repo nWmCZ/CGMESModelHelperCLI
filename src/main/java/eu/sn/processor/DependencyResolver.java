@@ -1,11 +1,19 @@
-package eu.sn;
+package eu.sn.processor;
+
+import eu.sn.model.CgmesProfileType;
+import eu.sn.model.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 import static java.lang.String.format;
 
 public class DependencyResolver {
-    private static Map<CgmesProfileType, Set<CgmesProfileType>> igmMap = new HashMap<>();
+
+    static Logger log = LoggerFactory.getLogger(DependencyResolver.class);
+
+    public static Map<CgmesProfileType, Set<CgmesProfileType>> igmMap = new HashMap<>();
 
     static {
         // SV
@@ -35,16 +43,16 @@ public class DependencyResolver {
     }
 
     public static void printProfileDependenciesStatus(Set<Profile> profiles) {
-        System.out.println(profiles);
+        log.debug(profiles.toString());
         boolean allFound = true;
         for (Profile profile : profiles) {
             int currentProfileDependentOnSize = profile.getDependentOn().size();
             int igmDefinitionDependentOnSize = igmMap.get(profile.getProfile()).size();
             if (currentProfileDependentOnSize != igmDefinitionDependentOnSize) {
-                System.out.println(format("The DependentOn size is different from definition. Found: %d. Should be: %d", currentProfileDependentOnSize, igmDefinitionDependentOnSize));
+                log.info(format("The DependentOn size is different from definition. Found: %d. Should be: %d", currentProfileDependentOnSize, igmDefinitionDependentOnSize));
                 allFound = false;
             } else if (new DuplicateStatus(profile.getDependentOn()).isFoundDuplicate()) {
-                System.out.println(format("Found duplicate DependentOn %s in profile %s", new DuplicateStatus(profile.getDependentOn()).getDuplicateDependencies(), profile.getProfile()));
+                log.info(format("Found duplicate DependentOn %s in profile %s", new DuplicateStatus(profile.getDependentOn()).getDuplicateDependencies(), profile.getProfile()));
                 allFound = false;
             } else {
                 Set<CgmesProfileType> profilesToBeFound = igmMap.get(profile.getProfile());
@@ -56,17 +64,48 @@ public class DependencyResolver {
                     if (profileFound.isPresent()) {
                         if (!profilesToBeFound.contains(profileFound.get().getProfile())) {
                             allFound = false;
-                            System.out.println(format("Reference '%s' defined in profile '%s' doesn't point to any of required profiles: %s", dependentOnString, profile.getProfile(), profilesToBeFound));
+                            log.info(format("Reference '%s' defined in profile '%s' doesn't point to any of required profiles: %s", dependentOnString, profile.getProfile(), profilesToBeFound));
                         }
                     } else {
                         allFound = false;
-                        System.out.println(format("Couldn't find profile with id '%s', which is defined in profile '%s'", dependentOnString, profile.getProfile()));
+                        log.info(format("Couldn't find profile with id '%s', which is defined in profile '%s'", dependentOnString, profile.getProfile()));
                     }
                 }
             }
         }
         if (allFound) {
-            System.out.println("Dependencies are valid");
+            log.info("Dependencies are valid");
+        }
+    }
+
+    public static boolean isAllProfilesPresent(Set<Profile> profiles) {
+        if (profiles.size() < 6) {
+            return false;
+        } else {
+            boolean sv = false, ssh = false, eq = false, tp = false, tp_bd = false, eq_bd = false;
+            for (Profile profile: profiles) {
+                switch (profile.getProfile()) {
+                    case STATE_VARIABLES:
+                        sv = true;
+                        break;
+                    case STEADY_STATE_HYPOTHESIS:
+                        ssh = true;
+                        break;
+                    case EQUIPMENT:
+                        eq = true;
+                        break;
+                    case TOPOLOGY:
+                        tp = true;
+                        break;
+                    case TOPOLOGY_BOUNDARY:
+                        tp_bd = true;
+                        break;
+                    case EQUIPMENT_BOUNDARY:
+                        eq_bd = true;
+                        break;
+                }
+            }
+            return sv && ssh && eq && tp && tp_bd && eq_bd;
         }
     }
 }

@@ -1,4 +1,7 @@
-package eu.sn;
+package eu.sn.model;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum CgmesProfileType {
     DOMAIN,
@@ -14,6 +17,8 @@ public enum CgmesProfileType {
 
     private CgmesProfileType() {
     }
+
+    static Logger log = LoggerFactory.getLogger(CgmesProfileType.class);
 
     public static CgmesProfileType resolveProfile(String parsedProfile) {
         if (parsedProfile.contains("DiagramLayout")) {
@@ -35,7 +40,7 @@ public enum CgmesProfileType {
         } else if (parsedProfile.contains("Topology/")) { // It's correct to have "/" in name, to distinguish between TP and TP_BD
             return CgmesProfileType.TOPOLOGY;
         } else {
-            System.out.println("Couldn't parse profile type: " + parsedProfile);
+            log.info("Couldn't parse profile type: " + parsedProfile);
             System.exit(1);
             return null;
         }
