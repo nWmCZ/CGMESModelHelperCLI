@@ -159,10 +159,10 @@ public class XMLProcessor {
         return cgmesProfile;
     }
 
-    private static String retrieveAttribute(String attribute, Iterator<com.sun.xml.internal.stream.events.AttributeImpl> attributes) {
+    private static String retrieveAttribute(String attribute, Iterator<javax.xml.stream.events.Attribute> attributes) {
         String foundAttributeValue = "nothing";
         if (attributes.hasNext()) {
-            com.sun.xml.internal.stream.events.AttributeImpl foundAttribute = attributes.next();
+            javax.xml.stream.events.Attribute foundAttribute = attributes.next();
             log.trace(foundAttribute.getName().getLocalPart());
             if (attribute.equals(foundAttribute.getName().getLocalPart())) {
                 foundAttributeValue = foundAttribute.getValue();
