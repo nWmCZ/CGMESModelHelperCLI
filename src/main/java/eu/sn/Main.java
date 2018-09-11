@@ -36,7 +36,7 @@ public class Main {
 
         options.addOption(PROFILES_PATH, true, "Profiles path to check. USAGE: java -jar app.jar -" + PROFILES_PATH + " /tmp/");
         options.addOption(VERIFY, false, "Verify correct dependencies between profiles. USAGE: java -jar app.jar -" + VERIFY);
-        options.addOption(DATE_TIME, true, "New date time for profiles. USAGE: java -jar app.jar -" + DATE_TIME + " 20180303T0330");
+        options.addOption(DATE_TIME, true, "New date time for profiles. USAGE: java -jar app.jar -" + DATE_TIME + " 20180303T0330Z");
         options.addOption(VERSION, true, "New version for profiles. USAGE: java -jar app.jar -" + VERSION + " 2");
         options.addOption(IDS, false, "New Ids for profiles. USAGE: java -jar app.jar -" + IDS);
         options.addOption(TSO, true, "TSO name. USAGE: java -jar app.jar -" + TSO + " ELIA");

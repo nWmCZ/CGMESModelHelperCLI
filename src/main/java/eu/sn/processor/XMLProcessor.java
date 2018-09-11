@@ -62,7 +62,7 @@ public class XMLProcessor {
         fullModel.getChildren(MODEL_DEPENDENT_ON, MD).clear();
 
         for (String dependent: dependentOn) {
-            fullModel.addContent(new Element(MODEL_DEPENDENT_ON, MD_PREFIX, MD_URI).setText(dependent));
+            fullModel.addContent(new Element(MODEL_DEPENDENT_ON, MD_PREFIX, MD_URI).setAttribute(new Attribute(RDF_RESOURCE, dependent, RDF)));
         }
 
         writeToFile(document, file);
